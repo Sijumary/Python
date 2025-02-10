@@ -1,0 +1,45 @@
+
+You are a junior DevOps engineer tasked with diagnosing and resolving a problematic Nginx deployment in a Kubernetes cluster. Your goal is to identify and fix configuration issues preventing the deployment from running correctly.
+
+Preparation
+Start and apply the deployment manifest to your Kubernetes cluster:
+
+minikube start
+kubectl apply -f ~/project/k8s-manifests/broken-nginx-deployment.yaml
+ Explain Code
+Tasks
+Investigate why the Nginx deployment is not running correctly
+Use kubectl commands to diagnose the deployment's issues
+Modify the deployment manifest to ensure all replicas are in a running state
+Apply the corrected deployment configuration
+
+minikube start
+
+kubectl get deployments 
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+broken-nginx   0/3     3            0           12s
+
+kubectl get pods
+
+NAME                            READY   STATUS             RESTARTS   AGE
+broken-nginx-57f799fc77-9jpql   0/1     ImagePullBackOff   0          18s
+broken-nginx-57f799fc77-bll9h   0/1     ImagePullBackOff   0          18s
+broken-nginx-57f799fc77-lkpjn   0/1     ImagePullBackOff   0  
+
+kubectl describe pod broken-nginx-57f799fc77-9jpql
+Warning  Failed     3m9s (x4 over 4m46s)   kubelet            Failed to pull image "nginx:nonexistent": rpc error: code = Unknown desc = Error response from daemon: manifest for nginx:nonexistent not found: manifest unknown: manifest unknown
+
+kubectl set image deployment/broken-nginx nginx=nginx:latest --record
+Flag --record has been deprecated, --record will be removed in the future
+deployment.apps/broken-nginx image updated
+kubectl rollout status deployment/broken-nginx
+deployment "broken-nginx" successfully rolled out
+labex:~/ $ kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+broken-nginx-56b6d4ccd5-c6xhj   1/1     Running   0          113s
+broken-nginx-56b6d4ccd5-fwr5n   1/1     Running   0          114s
+broken-nginx-56b6d4ccd5-vrcgb   1/1     Running   0          2m7s
+
+
+
+
