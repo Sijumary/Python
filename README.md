@@ -1,1 +1,3 @@
 # Python
+This repository contains few of the coding tasks that I did while learning Python.
+It also contains a few K8s challenges as well....
